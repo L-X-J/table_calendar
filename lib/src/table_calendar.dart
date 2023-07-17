@@ -204,6 +204,9 @@ class TableCalendar<T> extends StatefulWidget {
   /// Called when the calendar is created. Exposes its PageController.
   final void Function(PageController pageController)? onCalendarCreated;
 
+
+  final  bool Function(DateTime day)? isDayDisabled;
+
   /// Creates a `TableCalendar` widget.
   TableCalendar({
     Key? key,
@@ -222,6 +225,7 @@ class TableCalendar<T> extends StatefulWidget {
       CalendarFormat.week: 'Week',
     },
     this.headerVisible = true,
+    this.isDayDisabled,
     this.daysOfWeekVisible = true,
     this.pageJumpingEnabled = false,
     this.pageAnimationEnabled = true,
@@ -733,9 +737,9 @@ class _TableCalendarState<T> extends State<TableCalendar<T>> {
   }
 
   bool _isDayDisabled(DateTime day) {
-    return day.isBefore(widget.firstDay) ||
+    return (widget.isDayDisabled?.call(day)??false) || (day.isBefore(widget.firstDay) ||
         day.isAfter(widget.lastDay) ||
-        !_isDayAvailable(day);
+        !_isDayAvailable(day));
   }
 
   bool _isDayAvailable(DateTime day) {
